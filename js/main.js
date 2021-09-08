@@ -22,6 +22,7 @@ function createGrid(rows, cols) {
 	})
 }
 
+// Creates randomized hex code for a color. All color possibilities are covered by this
 function createRandomColor() {
 	const hexParts = '0123456789ABCDEF';
 	let color = '#';
@@ -35,14 +36,24 @@ function changeBackground(e) {
 	// e.currentTarget.classList.add("hover-div");
 	let color = createRandomColor();
 	let thisBackground = e.currentTarget.style.cssText;
-	console.log(`This backgrond is: ${thisBackground}`);
-	if (thisBackground === '') {
-		thisBackground = `background-color:${color};`;
+	// If there's no background css Text at all
+	if (!thisBackground) {
+		// give this element a random color
+		e.currentTarget.style.cssText = `background-color:${color};`;
+		// else if it already has some random color
 	} else {
+		// if the background css text also has filter in it
 		if (thisBackground.includes('filter')) {
-			console.log(`current filter level is: ${thisBackground}`);
+			let brightnessLevel = Number(thisBackground.slice(-5,-2));
+			//If there is a brightness value applied to the filter and it's not 0
+			if (brightnessLevel) {
+				brightnessLevel -= 0.1;
+				// decrement the filter brightness by 0.1
+				e.currentTarget.style.cssText += `filter:brightness(${brightnessLevel});`;
+			}
+			// else it hasn't been given a brightness filter yet, so apply the first level 
 		} else {
-			thisBackground += 'filter:brightness(0.9);'
+			e.currentTarget.style.cssText += 'filter:brightness(0.9);';
 		}
 	}
 }
@@ -56,7 +67,6 @@ function changeGrid(e) {
 	let newCols = prompt("Please provide a new number of grid columns <= 100:");
 	
 	createGrid(newRows, newCols);
-
 }
 
 createGrid(rowNum, colNum)
